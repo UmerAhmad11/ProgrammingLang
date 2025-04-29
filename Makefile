@@ -9,6 +9,11 @@ $(exec): $(objects)
 %.o: %.c include/%.h
 	gcc -c $(flags) $< -o $@
 
+install:
+	make
+	cp ./hello.out /usr/local/bin/hello
+	
+
 clean: 
 	-rm *.out
 	-rm *.o
