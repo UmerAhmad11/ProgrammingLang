@@ -1,5 +1,5 @@
 # --- Configuration ---
-exec = hello.out
+exec = slash.out
 sources = $(wildcard src/*.c)
 objects = $(sources:.c=.o)
 flags = -g
@@ -24,7 +24,7 @@ $(exec): $(objects)
 install: $(exec)
 # Copy the program to a standard location.
 # NOTE: This still uses sudo and will likely ask for a password.
-	sudo cp ./$(exec) /usr/local/bin/hello
+	sudo cp ./$(exec) /usr/local/bin/slash
 
 
 # How to clean up generated files:
