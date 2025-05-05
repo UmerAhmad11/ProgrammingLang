@@ -11,7 +11,7 @@ typedef struct PARSER_STRUCT{
 
 }parser_T;
 
-parser_T* init_parser(lexer_T*, lexer);
+parser_T* init_parser(lexer_T* lexer);
 
 void parser_eat(parser_T* parser, int token_type);
 

@@ -1,8 +1,9 @@
 #include "include/parser.h"
 #include <stdio.h>
+#include <string.h>
 
 
-parser_T* init_parser(lexer_T*, lexer)
+parser_T* init_parser(lexer_T* lexer)
 {
     parser_T* parser = calloc(1, sizeof(struct PARSER_STRUCT));
     parser->lexer = lexer;
@@ -30,7 +31,7 @@ void parser_eat(parser_T* parser, int token_type)
 
 AST_T* parser_parse(parser_T* parser)
 {
-    return parser_parse_statements();
+    return parser_parse_statements(parser);
 }
 
 AST_T* parser_parse_statement(parser_T* parser)
@@ -63,7 +64,10 @@ AST_T* parser_parse_statements(parser_T* parser)
 
 }
 
-AST_T* parser_parse_expr(parser_T* parser); // E.g. 1 + 3 * 7
+AST_T* parser_parse_expr(parser_T* parser)
+{
+
+} // E.g. 1 + 3 * 7 THE WHOLE THING GENERALLY
 
 AST_T* parser_parse_factor(parser_T* parser); // E.g. 1*2*(3+7) Things you multiply
 
@@ -71,7 +75,13 @@ AST_T* parser_parse_term(parser_T* parser); // E.g. 1 + 2 + (3*4) Things you add
 
 AST_T* parser_parse_function_call(parser_T* parser);
 
-AST_T* parser_parse_variable(parser_T* parser);
+AST_T* parser_parse_variable(parser_T* parser)
+{
+    AST_T* ast = init_ast(AST_VARIABLE);  // make sure this AST type exists
+    ast->variable_name = parser->current_token->value;
+    parser_eat(parser, TOKEN_ID);
+    return ast;
+}
 
 AST_T* parser_parse_variable_definition(parser_T* parser)
 {
@@ -79,11 +89,11 @@ AST_T* parser_parse_variable_definition(parser_T* parser)
     char* variable_definition_variable_name = parser->current_token->value;
     parser_eat(parser, TOKEN_ID); //name
     parser_eat(parser, TOKEN_EQUALS); //=
-    AST_T* variable_value = parser_parse_expr(parser);
+    AST_T* variable__definition_value = parser_parse_expr(parser);
 
     AST_T* variable_definition = init_ast(AST_VARIABLE_DEFINITION);
     variable_definition->variable_definition_variable_name = variable_definition_variable_name;
-    variable_definition->variable_value = variable_value;
+    variable_definition->variable_definition_value = variable__definition_value;
 
     return variable_definition;
 
@@ -93,7 +103,7 @@ AST_T* parser_parse_string(parser_T* parser);
 
 AST_T* parser_parse_id(parser_T* parser)
 {
-    if (strcmp(parser->current_token->value, 'var') == 0){
+    if (strcmp(parser->current_token->value, "var") == 0){
         return parser_parse_variable_definition(parser);
     }
     else{
