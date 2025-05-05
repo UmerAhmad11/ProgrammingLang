@@ -8,6 +8,7 @@ parser_T* init_parser(lexer_T* lexer)
     parser_T* parser = calloc(1, sizeof(struct PARSER_STRUCT));
     parser->lexer = lexer;
     parser->current_token = lexer_get_next_token(lexer);
+    parser->prev_token = parser->current_token;
 
     return parser;
 }
@@ -16,6 +17,7 @@ void parser_eat(parser_T* parser, int token_type)
 {
     if (parser->current_token->type == token_type)
     {
+        parser->prev_token = parser->current_token;
         parser->current_token = lexer_get_next_token(parser->lexer);
     }
     else
@@ -84,7 +86,26 @@ AST_T* parser_parse_term(parser_T* parser)
 
 AST_T* parser_parse_function_call(parser_T* parser)
 {
+    printf("func name: %s\n", parser->prev_token->value);
 
+    AST_T* function_call = init_ast(AST_FUNCTION_CALL);
+    function_call->function_call_name = parser->prev_token->value;
+
+
+    function_call->function_call_arguments = calloc(1, sizeof(struct AST_STRUCT*));
+    AST_T* ast_statement = parser_parse_statement(parser);
+    compound->compound_value[0] = ast_statement;
+    
+
+    while (parser->current_token->type == TOKEN_SEMI)
+    {
+        parser_eat(parser, TOKEN_SEMI);
+        AST_T* ast_statement = parser_parse_statement(parser);
+        compound->compound_size += 1;
+        compound->compound_value = realloc(compound->compound_value, compound->compound_size * sizeof(struct AST_STRUCT*));
+        compound->compound_value[compound->compound_size-1] = ast_statement;
+        
+    }
 }
 
 AST_T* parser_parse_variable(parser_T* parser)
