@@ -66,21 +66,38 @@ AST_T* parser_parse_statements(parser_T* parser)
 
 AST_T* parser_parse_expr(parser_T* parser)
 {
-
+    switch (parser->current_token->type)
+    {
+        case TOKEN_STRING: return parser_parse_string(parser);
+    }
 } // E.g. 1 + 3 * 7 THE WHOLE THING GENERALLY
 
-AST_T* parser_parse_factor(parser_T* parser); // E.g. 1*2*(3+7) Things you multiply
+AST_T* parser_parse_factor(parser_T* parser)
+{
 
-AST_T* parser_parse_term(parser_T* parser); // E.g. 1 + 2 + (3*4) Things you add
+} // E.g. 1*2*(3+7) Things you multiply
 
-AST_T* parser_parse_function_call(parser_T* parser);
+AST_T* parser_parse_term(parser_T* parser)
+{
+
+} // E.g. 1 + 2 + (3*4) Things you add
+
+AST_T* parser_parse_function_call(parser_T* parser)
+{
+
+}
 
 AST_T* parser_parse_variable(parser_T* parser)
 {
-    AST_T* ast = init_ast(AST_VARIABLE);  // make sure this AST type exists
-    ast->variable_name = parser->current_token->value;
+    char* token_value = parser->current_token->value;
     parser_eat(parser, TOKEN_ID);
-    return ast;
+    if (parser->current_token->type == TOKEN_LPAREN)
+        return parser_parse_function_call(parser);
+    
+    AST_T* ast_variable = init_ast(AST_VARIABLE);
+    ast_variable->variable_name = token_value;
+    return ast_variable;;
+    
 }
 
 AST_T* parser_parse_variable_definition(parser_T* parser)
@@ -99,7 +116,13 @@ AST_T* parser_parse_variable_definition(parser_T* parser)
 
 }
 
-AST_T* parser_parse_string(parser_T* parser);
+AST_T* parser_parse_string(parser_T* parser)
+{
+    AST_T* ast_string = init_ast(AST_STRING);
+    ast_string->string_value = parser->current_token->value;
+    parser_eat(parser, TOKEN_STRING);
+    return ast_string;
+}
 
 AST_T* parser_parse_id(parser_T* parser)
 {

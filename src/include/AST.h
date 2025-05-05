@@ -5,11 +5,11 @@
 typedef struct AST_STRUCT
 {
     enum{
-        AST_VARIABLE_DEFINITION,
-        AST_VARIABLE,
-        AST_FUNCTION_CALL,
-        AST_STRING,
-        AST_COMPOUND,
+        AST_VARIABLE_DEFINITION, //0
+        AST_VARIABLE, //1
+        AST_FUNCTION_CALL, //2
+        AST_STRING,  //3
+        AST_COMPOUND,  //4
     }type;
 
     /* AST VARIABLE DEFINITION */
