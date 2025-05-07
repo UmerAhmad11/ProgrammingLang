@@ -8,6 +8,7 @@ int main(int argc, char* argv[]){
         "var name = \"John Doe\";\n"
         "var noname = \"3\";\n"
         "print(name);\n"
+        "print(noname);\n"
     );
 
     parser_T* parser = init_parser(lexer);

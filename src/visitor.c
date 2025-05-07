@@ -25,9 +25,23 @@ visitor_T* init_visitor()
     return visitor;
 }
 
+// Helper function (likely in your visitor.c or AST.c)
+static const char* ast_type_to_string(int type) {
+    switch (type) {
+        case AST_VARIABLE_DEFINITION: return "AST_VARIABLE_DEFINITION";
+        case AST_VARIABLE:            return "AST_VARIABLE";
+        case AST_FUNCTION_CALL:       return "AST_FUNCTION_CALL";
+        case AST_STRING:              return "AST_STRING";
+        case AST_COMPOUND:            return "AST_COMPOUND";
+        case AST_NOOP:                return "AST_NOOP";
+        default:                      return "AST_UNKNOWN";
+    }
+}
+
+
 AST_T* visitor_visit(visitor_T* visitor, AST_T* node)
 {
-    printf("type=%d\n", node->type);
+    printf("Visiting Node -> Type: %d (%s)\n", node->type, ast_type_to_string(node->type));
     switch (node->type)
     {
         case AST_VARIABLE_DEFINITION: return visitor_visit_variable_definition(visitor, node); break;
@@ -70,6 +84,18 @@ AST_T* visitor_visit_variable_definition(visitor_T* visitor, AST_T* node)
 AST_T* visitor_visit_variable(visitor_T* visitor, AST_T* node)
 {
     printf("visiting variable\n");
+
+    for (int i = 0; i < visitor->variable_definitions_size; i++)
+    {
+        AST_T* vardef = visitor->variable_definitions[i];
+
+        if (strcmp(vardef->variable_definition_variable_name, node->variable_name) == 0)
+        {
+            return visitor_visit(visitor, vardef->variable_definition_value);
+        }
+    }
+    printf("Undefined Variable '%s'\n", node->variable_name);
+    return node;
 }
 
 AST_T* visitor_visit_function_call(visitor_T* visitor, AST_T* node)
@@ -86,7 +112,7 @@ AST_T* visitor_visit_function_call(visitor_T* visitor, AST_T* node)
 
 AST_T* visitor_visit_string(visitor_T* visitor, AST_T* node)
 {
-
+    return node;
 }
 
 AST_T* visitor_visit_compound(visitor_T* visitor, AST_T* node)
