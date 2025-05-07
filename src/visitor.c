@@ -11,8 +11,8 @@ static AST_T* builtin_function_print(visitor_T* visitor, AST_T** args, int args_
         switch (visited_ast->type)
         {
             case AST_STRING: printf("%s\n", visited_ast->string_value); break;
+            default: printf("%p\n", visited_ast); break;
         }
-        printf("%p\n", visited_ast);
     }
     return init_ast(AST_NOOP);
 }
@@ -38,7 +38,6 @@ static const char* ast_type_to_string(int type) {
     }
 }
 
-
 AST_T* visitor_visit(visitor_T* visitor, AST_T* node)
 {
     printf("Visiting Node -> Type: %d (%s)\n", node->type, ast_type_to_string(node->type));
@@ -59,9 +58,7 @@ AST_T* visitor_visit(visitor_T* visitor, AST_T* node)
 }
 
 AST_T* visitor_visit_variable_definition(visitor_T* visitor, AST_T* node)
-{
-    printf("visiting variable definition\n");
-    
+{   
     if (visitor->variable_definitions == (void*)0)
     {
         visitor->variable_definitions = calloc(1, sizeof(struct AST_STRUCT*));
@@ -83,8 +80,6 @@ AST_T* visitor_visit_variable_definition(visitor_T* visitor, AST_T* node)
 
 AST_T* visitor_visit_variable(visitor_T* visitor, AST_T* node)
 {
-    printf("visiting variable\n");
-
     for (int i = 0; i < visitor->variable_definitions_size; i++)
     {
         AST_T* vardef = visitor->variable_definitions[i];
@@ -100,7 +95,6 @@ AST_T* visitor_visit_variable(visitor_T* visitor, AST_T* node)
 
 AST_T* visitor_visit_function_call(visitor_T* visitor, AST_T* node)
 {
-    printf("visiting function call\n");
     if (strcmp(node->function_call_name, "print") == 0)
     {
         return builtin_function_print(visitor, node->function_call_arguments, node->function_call_arguments_size);
@@ -117,7 +111,6 @@ AST_T* visitor_visit_string(visitor_T* visitor, AST_T* node)
 
 AST_T* visitor_visit_compound(visitor_T* visitor, AST_T* node)
 {
-    printf("visiting compound\n");
     for (int i = 0; i < node->compound_size; i++)
     {
         printf("Compound Value = %d\n", i);
