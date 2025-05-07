@@ -10,6 +10,7 @@ typedef struct AST_STRUCT
         AST_FUNCTION_CALL, //2
         AST_STRING,  //3
         AST_COMPOUND,  //4
+        AST_NOOP //5
     }type;
 
     /* AST VARIABLE DEFINITION */

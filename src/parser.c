@@ -42,6 +42,8 @@ AST_T* parser_parse_statement(parser_T* parser)
     {
         case TOKEN_ID: return parser_parse_id(parser);
     }
+
+    return init_ast(AST_NOOP);
 }
 
 AST_T* parser_parse_statements(parser_T* parser)
@@ -56,14 +58,14 @@ AST_T* parser_parse_statements(parser_T* parser)
     {
         parser_eat(parser, TOKEN_SEMI);
         AST_T* ast_statement = parser_parse_statement(parser);
-        compound->compound_size += 1;
-        compound->compound_value = realloc(compound->compound_value, compound->compound_size * sizeof(struct AST_STRUCT*));
-        compound->compound_value[compound->compound_size-1] = ast_statement;
-        
+        if (ast_statement)
+        {
+            compound->compound_size += 1;
+            compound->compound_value = realloc(compound->compound_value, compound->compound_size * sizeof(struct AST_STRUCT*));
+            compound->compound_value[compound->compound_size-1] = ast_statement;
+        }
     }
-
     return compound;
-
 }
 
 AST_T* parser_parse_expr(parser_T* parser)
@@ -73,6 +75,7 @@ AST_T* parser_parse_expr(parser_T* parser)
         case TOKEN_STRING: return parser_parse_string(parser);
         case TOKEN_ID: return parser_parse_id(parser);
     }
+    return init_ast(AST_NOOP);
 } // E.g. 1 + 3 * 7 THE WHOLE THING GENERALLY
 
 AST_T* parser_parse_factor(parser_T* parser)
