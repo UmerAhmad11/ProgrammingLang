@@ -48,55 +48,24 @@ AST_T* parser_parse_statement(parser_T* parser)
 
 AST_T* parser_parse_statements(parser_T* parser)
 {
-    AST_T* compound_node = init_ast(AST_COMPOUND); // compound_size = 0, compound_value = NULL
+    AST_T* compound = init_ast(AST_COMPOUND);
+    compound->compound_value = calloc(1, sizeof(struct AST_STRUCT*));
+    AST_T* ast_statement = parser_parse_statement(parser);
+    compound->compound_value[0] = ast_statement;
+    compound->compound_size += 1;
 
-    // Handle empty program or if the first token isn't part of a valid statement
-    if (parser->current_token->type == TOKEN_EOF) {
-        return compound_node; // Return empty compound
-    }
-
-    AST_T* first_statement = parser_parse_statement(parser);
-    
-    // If the first statement is NOOP and we're at EOF (e.g. empty input or just comments),
-    // we can return an empty compound or the NOOP itself.
-    // For simplicity, we'll add it.
-    compound_node->compound_value = calloc(1, sizeof(struct AST_STRUCT*));
-    if (!compound_node->compound_value) {
-        perror("parser_parse_statements: calloc failed for the first statement");
-        exit(1);
-    }
-    compound_node->compound_value[0] = first_statement;
-    compound_node->compound_size = 1; // Correctly account for the first statement
-
-    // Loop for subsequent statements separated by semicolons
     while (parser->current_token->type == TOKEN_SEMI)
     {
         parser_eat(parser, TOKEN_SEMI);
-
-        // If after eating a SEMI, we are at EOF, there's no next statement.
-        if (parser->current_token->type == TOKEN_EOF) {
-            // Optionally, you could add a NOOP here if strict about semicolons always preceding statements
-            // or just break if a trailing semicolon is allowed without a following statement.
-            break; 
+        AST_T* ast_statement = parser_parse_statement(parser);
+        if (ast_statement)
+        {
+            compound->compound_size += 1;
+            compound->compound_value = realloc(compound->compound_value, compound->compound_size * sizeof(struct AST_STRUCT*));
+            compound->compound_value[compound->compound_size-1] = ast_statement;
         }
-
-        AST_T* subsequent_statement = parser_parse_statement(parser);
-        // If parser_parse_statement returns NOOP because there's nothing valid after a semicolon
-        // (e.g. "stmt1;;stmt2"), you might choose not to add the NOOP.
-        // For now, we add whatever is parsed.
-        // if (subsequent_statement->type == AST_NOOP && parser->current_token->type == TOKEN_EOF) break; // Avoid trailing NOOPs
-
-        compound_node->compound_size++; // Increment size for the new statement
-        AST_T** temp_ptr = realloc(compound_node->compound_value, compound_node->compound_size * sizeof(struct AST_STRUCT*));
-        if (!temp_ptr) {
-            perror("parser_parse_statements: realloc failed for subsequent statements");
-            exit(1);
-        }
-        compound_node->compound_value = temp_ptr;
-        compound_node->compound_value[compound_node->compound_size - 1] = subsequent_statement;
     }
-
-    return compound_node;
+    return compound;
 }
 
 AST_T* parser_parse_expr(parser_T* parser)
@@ -131,6 +100,7 @@ AST_T* parser_parse_function_call(parser_T* parser)
     function_call->function_call_arguments = calloc(1, sizeof(struct AST_STRUCT*));
     AST_T* ast_expr = parser_parse_expr(parser);
     function_call->function_call_arguments[0] = ast_expr;
+    function_call->function_call_arguments_size += 1;
     
 
     while (parser->current_token->type == TOKEN_COMMA)
