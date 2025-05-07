@@ -24,7 +24,8 @@ $(exec): $(objects)
 install: $(exec)
 # Copy the program to a standard location.
 # NOTE: This still uses sudo and will likely ask for a password.
-	sudo cp ./$(exec) /usr/local/bin/slash
+	cp ./slash.out ~/.local/bin/slash
+
 
 
 # How to clean up generated files:

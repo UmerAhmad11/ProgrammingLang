@@ -93,9 +93,8 @@ AST_T* parser_parse_function_call(parser_T* parser)
     printf("func name: %s\n", parser->prev_token->value);
 
     AST_T* function_call = init_ast(AST_FUNCTION_CALL);
-    parser_eat(parser, TOKEN_LPAREN);
     function_call->function_call_name = parser->prev_token->value;
-
+    parser_eat(parser, TOKEN_LPAREN);
 
     function_call->function_call_arguments = calloc(1, sizeof(struct AST_STRUCT*));
     AST_T* ast_expr = parser_parse_expr(parser);
