@@ -5,7 +5,7 @@
 
 AST_T* visitor_visit(AST_T* node)
 {
-
+    printf("type=%d\n", node->type);
     switch (node->type)
     {
         case AST_VARIABLE_DEFINITION: return visitor_visit_variable_definition(node); break;

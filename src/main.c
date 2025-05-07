@@ -6,6 +6,7 @@
 int main(int argc, char* argv[]){
     lexer_T* lexer = init_lexer(
         "var name = \"John Doe\";\n"
+        "var noname = \"3\";\n"
         "print(name);\n"
     );
 
