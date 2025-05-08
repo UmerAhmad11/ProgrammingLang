@@ -90,7 +90,7 @@ AST_T* parser_parse_term(parser_T* parser)
 
 AST_T* parser_parse_function_call(parser_T* parser)
 {
-    printf("func name: %s\n", parser->prev_token->value);
+    //printf("func name: %s\n", parser->prev_token->value);
 
     AST_T* function_call = init_ast(AST_FUNCTION_CALL);
     function_call->function_call_name = parser->prev_token->value;

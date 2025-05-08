@@ -40,7 +40,7 @@ static const char* ast_type_to_string(int type) {
 
 AST_T* visitor_visit(visitor_T* visitor, AST_T* node)
 {
-    printf("Visiting Node -> Type: %d (%s)\n", node->type, ast_type_to_string(node->type));
+    //printf("Visiting Node -> Type: %d (%s)\n", node->type, ast_type_to_string(node->type));
     switch (node->type)
     {
         case AST_VARIABLE_DEFINITION: return visitor_visit_variable_definition(visitor, node); break;
@@ -113,7 +113,7 @@ AST_T* visitor_visit_compound(visitor_T* visitor, AST_T* node)
 {
     for (int i = 0; i < node->compound_size; i++)
     {
-        printf("Compound Value = %d\n", i);
+        //printf("Compound Value = %d\n", i);
         visitor_visit(visitor, node->compound_value[i]);
     }
     return init_ast(AST_NOOP);
